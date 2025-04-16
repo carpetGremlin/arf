@@ -102,3 +102,43 @@ Information about setting up a local development environment can be found in [LO
 ## Acknowledgements
 
 SendAI. (2024). Solana Agent Kit (Version 1.2.0) [Computer software]. https://github.com/sendaifun/solana-agent-kit
+
+## Deployment
+
+### Deploying to Render
+
+This project includes configurations for easy deployment on [Render](https://render.com).
+
+1. Fork/clone this repository to your GitHub account
+
+2. Sign up for a Render account and connect your GitHub repository
+
+3. Use the Blueprint deployment with the included `render.yaml` file:
+   - Click "New" → "Blueprint"
+   - Select your repository
+   - Render will detect the `render.yaml` file and set up the services
+
+4. Set up environment variables in the Render dashboard:
+   - Go to your web service
+   - Navigate to "Environment" tab
+   - Add all required environment variables from `.env.production`
+
+5. Deploy your application:
+   - Render will automatically deploy your application
+   - The database will be set up automatically
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+## Security
+
+This application implements several security measures:
+
+- Environment variables for sensitive API keys and secrets
+- Privy authentication for secure user login and wallet management
+- Middleware protection for authenticated routes
+- Server-side session validation
+- PostgreSQL database with secure connections
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

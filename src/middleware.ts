@@ -1,91 +1,58 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-// Public pages that don't require authentication
-const PUBLIC_PAGES = [
-  '/', // Home page (Login)
-  '/refresh', // Token refresh page
+// Define paths that don't require authentication
+const PUBLIC_PATHS = [
+  '/',                 // Landing page
+  '/login',            // Login page
+  '/api/auth',         // Auth API routes
+  '/api/webhook',      // Webhook API routes
 ];
 
-// Public static asset extensions that don't require authentication
-const PUBLIC_ASSETS = [
-  '.svg', // SVG images
-  '.png', // PNG images
-  '.jpg', // JPG images
-  '.jpeg', // JPEG images
-  '.ico', // Icon files
-  '.webp', // WebP images
-  '.gif', // GIF images
-];
+// Function to check if the path is public
+function isPublicPath(path: string): boolean {
+  return PUBLIC_PATHS.some(publicPath => {
+    // Exact match
+    if (publicPath === path) return true;
+    // Path starts with public path followed by /
+    if (path.startsWith(`${publicPath}/`)) return true;
+    return false;
+  }) || 
+  // Check for static files
+  path.match(/\.(ico|png|jpg|jpeg|svg|css|js|json)$/i) !== null;
+}
 
+export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  
+  // Allow public paths without authentication check
+  if (isPublicPath(path)) {
+    return NextResponse.next();
+  }
+
+  // Check for Privy auth cookie
+  const authCookie = request.cookies.get('privy-token');
+  
+  // If no auth cookie is present and the path requires auth, redirect to landing page
+  if (!authCookie) {
+    const url = new URL('/', request.url);
+    return NextResponse.redirect(url);
+  }
+
+  // Continue with the request if authenticated
+  return NextResponse.next();
+}
+
+// Only run middleware on specific paths
 export const config = {
   matcher: [
     /*
-     * Match all request paths except those starting with:
-     * - api (API routes)
+     * Match all request paths except:
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico (website icon)
+     * - favicon.ico (favicon file)
+     * - public files (public assets)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|logo.svg|.*\\.png$).*)',
   ],
 };
-
-export async function middleware(req: NextRequest) {
-  const cookieAuthToken = req.cookies.get('privy-token');
-  const cookieSession = req.cookies.get('privy-session');
-  const { pathname, searchParams } = req.nextUrl;
-
-  const response = NextResponse.next();
-
-  // Check for a `ref` query parameter in the URL and set the cookie
-  const referralCode = searchParams.get('ref');
-  if (referralCode) {
-    response.cookies.set('referralCode', referralCode, {
-      httpOnly: false,
-      sameSite: 'strict',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-    });
-  }
-
-  // Skip middleware for public pages
-  if (PUBLIC_PAGES.includes(pathname)) {
-    return response;
-  }
-
-  // Skip middleware for static assets
-  if (PUBLIC_ASSETS.some((ext) => pathname.toLowerCase().endsWith(ext))) {
-    return response;
-  }
-
-  // Skip middleware for Privy OAuth authentication flow
-  if (
-    req.nextUrl.searchParams.has('privy_oauth_code') ||
-    req.nextUrl.searchParams.has('privy_oauth_state') ||
-    req.nextUrl.searchParams.has('privy_oauth_provider')
-  ) {
-    return response;
-  }
-
-  // User authentication status check
-  const definitelyAuthenticated = Boolean(cookieAuthToken); // User is definitely authenticated (has access token)
-  const maybeAuthenticated = Boolean(cookieSession); // User might be authenticated (has session)
-
-  // Handle token refresh cases
-  if (!definitelyAuthenticated && maybeAuthenticated) {
-    const redirectUrl = new URL('/refresh', req.url);
-    // Ensure redirect_uri is the current page path
-    redirectUrl.searchParams.set('redirect_uri', pathname);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // Handle unauthenticated cases
-  if (!definitelyAuthenticated && !maybeAuthenticated) {
-    const loginUrl = new URL('/', req.url);
-    // Ensure redirect_uri is the current page path
-    loginUrl.searchParams.set('redirect_uri', pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  return response;
-}

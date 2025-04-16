@@ -3,9 +3,7 @@ import { Comic_Neue } from 'next/font/google';
 
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-
-import AuthProviders from '@/components/provider-auth';
-import { ThemeProvider } from '@/components/provider-theme';
+import { PrivyProvider } from '@privy-io/react-auth';
 import { Toaster } from '@/components/ui/sonner';
 import { cn } from '@/lib/utils';
 
@@ -19,12 +17,8 @@ const comicNeue = Comic_Neue({
 });
 
 export const metadata: Metadata = {
-  title: {
-    template: '%s | Artificial Retard Intelligence',
-    default: 'Artificial Retard Intelligence - The Intelligent Copilot for Solana',
-  },
-  description: 'The Intelligent Copilot elevating your Solana experience.',
-
+  title: 'ARI - Artificial Retard Intelligence for Solana',
+  description: 'The Retarded Copilot for Solana: Elevate your Solana experience with AI-powered insights and delegated actions',
   icons: {
     icon: '/logo.svg',
   },
@@ -32,7 +26,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+  
+  if (!privyAppId) {
+    return (
+      <html lang="en">
+        <body>
+          <div className="flex h-screen items-center justify-center">
+            <p className="text-red-500">
+              Error: Privy app ID not configured. Please check the environment variables.
+            </p>
+          </div>
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -41,21 +53,26 @@ export default function RootLayout({
           'overflow-x-hidden antialiased font-comic-sans',
         )}
       >
-        <AuthProviders>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <main className="sticky bottom-0 overflow-hidden md:overflow-visible">
-              {children}
-              <Toaster />
-            </main>
-          </ThemeProvider>
-        </AuthProviders>
-        <Analytics />
-        <SpeedInsights />
+        <PrivyProvider
+          appId={privyAppId}
+          config={{
+            loginMethods: ['email', 'wallet'],
+            appearance: {
+              theme: 'dark',
+              accentColor: '#6366f1', // indigo-600
+              logo: '/logo.svg',
+            },
+            embeddedWallets: {
+              createOnLogin: 'users-without-wallets',
+              noPromptOnSignature: true,
+            },
+          }}
+        >
+          {children}
+          <Toaster position="top-right" />
+          <Analytics />
+          <SpeedInsights />
+        </PrivyProvider>
       </body>
     </html>
   );
