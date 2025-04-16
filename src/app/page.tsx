@@ -32,8 +32,8 @@ import { RainbowButton } from '@/components/ui/rainbow-button';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { label: 'Github', href: 'https://git.new/neur', icon: GitHubLogoIcon },
-  { label: 'Docs', href: 'https://docs.neur.sh', icon: BookOpenIcon },
+  { label: 'Github', href: 'https://github.com/artificial-retard-intelligence', icon: GitHubLogoIcon },
+  { label: 'Docs', href: 'https://docs.artificial-retard-intelligence.com', icon: BookOpenIcon },
 ];
 
 const Header = ({ handleLogin }: { handleLogin: () => void }) => {
@@ -151,7 +151,7 @@ const Hero = ({ handleLogin }: { handleLogin: () => void }) => {
           <BlurFade delay={0.3} className="pointer-events-none select-none">
             <div className="inline-flex items-center rounded-full border border-primary/20 bg-muted/80 px-4 py-1.5 shadow-lg backdrop-blur-sm">
               <span className="text-sm font-medium text-primary">
-                ✨ Introducing Neur Agent
+                ✨ Introducing Artificial Retard Intelligence Agent
               </span>
             </div>
 
@@ -209,7 +209,7 @@ const Hero = ({ handleLogin }: { handleLogin: () => void }) => {
                 <div className="relative dark:hidden">
                   <Image
                     src="/product.png"
-                    alt="Neur AI Interface"
+                    alt="Artificial Retard Intelligence AI Interface"
                     width={1200}
                     height={675}
                     className="w-full rounded-2xl"
@@ -220,7 +220,7 @@ const Hero = ({ handleLogin }: { handleLogin: () => void }) => {
                 <div className="relative hidden dark:block">
                   <Image
                     src="/product_dark.png"
-                    alt="Neur AI Interface"
+                    alt="Artificial Retard Intelligence AI Interface"
                     width={1200}
                     height={675}
                     className="w-full rounded-2xl"
@@ -357,10 +357,10 @@ const Footer = () => {
         delay={0.5}
         className="flex items-center justify-center gap-3 text-sm text-muted-foreground"
       >
-        <p>© 2024 Neur. All rights reserved.</p>
+        <p>© 2024 Artificial Retard Intelligence. All rights reserved.</p>
         <span>|</span>
         <Link
-          href="https://x.com/neur_sh"
+          href="https://x.com/ari_sh"
           target="_blank"
           title="Follow us on X"
           className="transition-colors hover:scale-105 hover:text-primary"
@@ -389,7 +389,7 @@ export default function Home() {
 
   if (isMaintenanceMode) {
     login = () => {
-      window.location.href = 'https://x.com/neur_sh';
+      window.location.href = 'https://x.com/ari_sh';
     };
   }
 

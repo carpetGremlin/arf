@@ -98,10 +98,11 @@
 
   * {
     @apply border-border;
+    font-family: 'Comic Neue', var(--font-comic-neue), 'Comic Sans MS', 'Comic Sans', cursive;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-comic-sans;
   }
 
   /* Custom Scrollbar Styles */

@@ -8,6 +8,9 @@ export default {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    fontFamily: {
+      'comic-sans': ['var(--font-comic-neue)', 'Comic Neue', 'Comic Sans MS', 'Comic Sans', 'cursive'],
+    },
     extend: {
       colors: {
         background: 'hsl(var(--background))',

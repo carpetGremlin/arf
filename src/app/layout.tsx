@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Comic_Neue } from 'next/font/google';
 
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -11,20 +11,17 @@ import { cn } from '@/lib/utils';
 
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+// Use Comic Neue as our main font
+const comicNeue = Comic_Neue({
+  weight: ['400', '700'],
   subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  variable: '--font-comic-neue',
 });
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Neur',
-    default: 'Neur - The Intelligent Copilot for Solana',
+    template: '%s | Artificial Retard Intelligence',
+    default: 'Artificial Retard Intelligence - The Intelligent Copilot for Solana',
   },
   description: 'The Intelligent Copilot elevating your Solana experience.',
 
@@ -40,8 +37,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          `${geistSans.variable} ${geistMono.variable}`,
-          'overflow-x-hidden antialiased',
+          `${comicNeue.variable}`,
+          'overflow-x-hidden antialiased font-comic-sans',
         )}
       >
         <AuthProviders>
